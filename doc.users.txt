@@ -1,0 +1,11 @@
+user informatioins:
+
+
+{
+    "first_name": "Younes",
+    "last_name": "Rajix", 
+    "email": "rajix2100@gamil.com", 
+    "password": "123456789"
+}
+
+
