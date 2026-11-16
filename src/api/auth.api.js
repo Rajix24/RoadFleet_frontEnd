@@ -7,18 +7,13 @@ export async  function User_login(information){
         headers:{
             'Content-type': 'application/json'
         },
+        credentials: "include",
         body:JSON.stringify(information)
     })
     if(!response.ok){
         throw new Error("error in login try again...")
     }
     const data = await response.json()
-    // Cookie.set("auth_token", data.user.token, {
-    //     expires: 7,
-    //     secure: true,
-    //     sameSite: "Strict"
-    // })
-    
     Cookie.set("user", JSON.stringify(data.user))
     return data.user
 }

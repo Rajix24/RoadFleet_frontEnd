@@ -22,7 +22,35 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { GetUsers } from "@/api/UserApi";
+import { useEffect, useState } from "react";
+
 export default function Admin({ user }) {
+  const [listUsers, setListUsers] = useState([])
+  useEffect(()=>{
+    async function loadUsers(){
+      try{
+        const users = await GetUsers()
+        console.log("users", users)
+        setListUsers(users)
+      }catch(error){
+        console.log(error)
+      }
+    }
+    loadUsers()
+  }, [])
+
+
+
+
+  if(listUsers.length === 0) {
+    return (
+          <h3>No user have in The Application</h3>      
+    )
+  }
+  console.log(listUsers)
+  
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -40,7 +68,9 @@ export default function Admin({ user }) {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Welcome {user.first_name + " "} {user.last_name} </BreadcrumbPage>
+                  <BreadcrumbPage>
+                    Welcome {user.first_name + " "} {user.last_name}{" "}
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -55,29 +85,26 @@ export default function Admin({ user }) {
           <Table className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
+                  <TableHead>First Name</TableHead>
+                  <TableHead>Last Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Join</TableHead>
               </TableRow>
             </TableHeader>
-
             <TableBody>
-              <TableRow>
-                <TableCell>1</TableCell>
-                <TableCell>Younes</TableCell>
-                <TableCell>younes@example.com</TableCell>
-                <TableCell>Admin</TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>2</TableCell>
-                <TableCell>Ali</TableCell>
-                <TableCell>ali@example.com</TableCell>
-                <TableCell>User</TableCell>
-              </TableRow>
+              {listUsers.map((itme) => (
+                <TableRow key={itme._id}>
+                  <TableCell>{itme.first_name}</TableCell>
+                  <TableCell>{itme.last_name}</TableCell>
+                  <TableCell>{itme.email}</TableCell>
+                  <TableCell>{itme.role}</TableCell>
+                  <TableCell>{itme.createdAt}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
+
           {/* <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" /> */}
         </div>
       </SidebarInset>

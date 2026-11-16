@@ -12,18 +12,9 @@ import { GetUsers } from "./api/UserApi";
 
 function App() {
 
-  // let data = async ()=>{
-  //   const data = await GetUsers()
-  //   console.log("debug")
-  //   console.log(data)
-  // }
-  // data()
-  
   const [user, setUser] = useState(() => {
    
     const cookieUser = Cookie.get("user");
-
-    
     if (!cookieUser) {
       return null;
     }
@@ -39,17 +30,17 @@ function App() {
 
 
 
-  function handleLogin(infoUser) {
-    if (!infoUser) return;
+  // function handleLogin(infoUser) {
+  //   if (!infoUser) return;
 
-    setUser(infoUser);
+  //   setUser(infoUser);
 
-    if (infoUser.role === "admin") {
-      setPage("admin");
-    } else if (infoUser.role === "chauffeur") {
-      setPage("chauffeur");
-    }
-  }
+  //   if (infoUser.role === "admin") {
+  //     setPage("admin");
+  //   } else if (infoUser.role === "chauffeur") {
+  //     setPage("chauffeur");
+  //   }
+  // }
 
   function handleLogout() {
     Cookie.remove("user");
@@ -60,7 +51,7 @@ function App() {
   if (user?.role === "admin") {
     return (
       <ProtectedView>
-        <Admin user={user} onLogout={handleLogout} />
+        <Admin user={user}  />
       </ProtectedView>
     );
   }
@@ -68,14 +59,14 @@ function App() {
   if (user?.role === "chauffeur") {
     return (
       <ProtectedView>
-        <Chauffeur user={user} onLogout={handleLogout} />
+        <Chauffeur user={user}  />
       </ProtectedView>
     );
   }
 
   return (
     <ProtectedView>
-      <Login onLogin={handleLogin} editUser={setUser} />
+      <Login  editUser={setUser} />
     </ProtectedView>
   );
 }

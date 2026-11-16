@@ -25,16 +25,11 @@ export async function GetUsers() {
                 "Content-Type": "application/json",
             }
         })
-
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`)
         }
-
         const Users = await response.json()
-
-        console.log(Users.data)
-        return Users.data
-
+        return Users
     } catch (error) {
         console.error("GetUsers error:", error)
         throw error

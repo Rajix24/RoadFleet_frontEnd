@@ -32,8 +32,8 @@ import {
     const user = await User_login({email, password})
     console.log(user, "qwoihdqdjiqjdiqjwdiq")
     
-    onLogin(user);
-    // editUser(user)
+    // onLogin(user);
+    editUser(user)
   }
 
   return (
