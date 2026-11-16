@@ -13,11 +13,12 @@ export async  function User_login(information){
         throw new Error("error in login try again...")
     }
     const data = await response.json()
-    Cookie.set("auth_token", data.user.token, {
-        expires: 7,
-        secure: true,
-        sameSite: "Strict"
-    })
+    // Cookie.set("auth_token", data.user.token, {
+    //     expires: 7,
+    //     secure: true,
+    //     sameSite: "Strict"
+    // })
     
+    Cookie.set("user", JSON.stringify(data.user))
     return data.user
 }

@@ -1,17 +1,48 @@
-import { useState } from 'react'
-import './App.css'
-import Admin from './pages/Admin'
-import Chauffeur from './pages/Chauffeur.jsx'
-import Login from './pages/Login.jsx'
-import ProtectedView from './layouts/ProtectedView'
+import { useState } from "react";
+import Cookie from "js-cookie";
+import "./App.css";
+
+
+import Admin from "./pages/Admin";
+import Chauffeur from "./pages/Chauffeur.jsx";
+import Login from "./pages/Login.jsx";
+import ProtectedView from "./layouts/ProtectedView";
+import { GetUsers } from "./api/UserApi";
 
 
 function App() {
-  const [user , setUser] = useState(null)
-  const [page, setPage] = useState("")
 
-    function handleLogin(infoUser) {
-      setUser(infoUser)
+  // let data = async ()=>{
+  //   const data = await GetUsers()
+  //   console.log("debug")
+  //   console.log(data)
+  // }
+  // data()
+  
+  const [user, setUser] = useState(() => {
+   
+    const cookieUser = Cookie.get("user");
+
+    
+    if (!cookieUser) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(cookieUser);
+    } catch (error) {
+      console.error("Invalid user cookie:", error);
+      return null;
+    }
+  });
+
+
+
+
+  function handleLogin(infoUser) {
+    if (!infoUser) return;
+
+    setUser(infoUser);
 
     if (infoUser.role === "admin") {
       setPage("admin");
@@ -19,29 +50,34 @@ function App() {
       setPage("chauffeur");
     }
   }
-    function handleLogout() {
+
+  function handleLogout() {
+    Cookie.remove("user");
+    setUser(null);
     setPage("login");
   }
 
-  // if (page === "login") {
-  //   return  <Login onLogin={handleLogin} />;
-  // }
-
-  if (page === "admin") {
-    return <ProtectedView user={user}>
-          <Admin onLogout={handleLogout} />;
-        </ProtectedView> 
+  if (user?.role === "admin") {
+    return (
+      <ProtectedView>
+        <Admin user={user} onLogout={handleLogout} />
+      </ProtectedView>
+    );
   }
 
-  if (page === "chauffeur") {
-    return<ProtectedView user={user}>
-        <Chauffeur onLogout={handleLogout} />;
-        </ProtectedView>
+  if (user?.role === "chauffeur") {
+    return (
+      <ProtectedView>
+        <Chauffeur user={user} onLogout={handleLogout} />
+      </ProtectedView>
+    );
   }
 
- return <ProtectedView user={user}>
-          <Login onLogin={handleLogin} /> 
-        </ProtectedView>
+  return (
+    <ProtectedView>
+      <Login onLogin={handleLogin} editUser={setUser} />
+    </ProtectedView>
+  );
 }
 
-export default App
+export default App;
