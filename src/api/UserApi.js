@@ -35,3 +35,49 @@ export async function GetUsers() {
         throw error
     }
 }
+
+export async  function DeleteUser(param){
+    try{
+
+        const response = await fetch(`${base_url}/api/user/${param}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers:{
+                "Content-Type": "application/json"
+            }
+        })
+        
+        if (!response.ok) {
+            throw new Error("can't delete user");
+        }
+        const res = response.json()
+        return res
+    }catch(error){
+        console.log(error)
+        // throw new Error("error in function of delete user")
+    }
+}
+
+export async function UpdateUser(email, userData) {
+    try {
+        const response = await fetch(`${base_url}/api/user/${encodeURIComponent(email)}`, {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userData),
+        })
+
+        if (!response.ok) {
+            throw new Error(`Unable to update user (HTTP ${response.status})`)
+        }
+
+        const responseText = await response.text()
+        return responseText ? JSON.parse(responseText) : null
+    } catch (error) {
+        console.error("UpdateUser error:", error)
+        throw error
+    }
+}
+

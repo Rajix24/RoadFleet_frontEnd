@@ -18,7 +18,7 @@ function App() {
     if (!cookieUser) {
       return null;
     }
-
+    
     try {
       return JSON.parse(cookieUser);
     } catch (error) {
@@ -26,21 +26,6 @@ function App() {
       return null;
     }
   });
-
-
-
-
-  // function handleLogin(infoUser) {
-  //   if (!infoUser) return;
-
-  //   setUser(infoUser);
-
-  //   if (infoUser.role === "admin") {
-  //     setPage("admin");
-  //   } else if (infoUser.role === "chauffeur") {
-  //     setPage("chauffeur");
-  //   }
-  // }
 
   function handleLogout() {
     Cookie.remove("user");
