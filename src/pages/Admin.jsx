@@ -1,6 +1,12 @@
-import { AppSidebar } from "@/components/app-sidebar";
-import { MoreHorizontalIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+//SERVICES:
+import { onDelete } from "@/services/user.service";
+
+import { GetUsers, DeleteUser, UpdateUser } from "@/api/UserApi";
+import { useEffect, useState, useContext } from "react";
+import { UserContext } from "@/context/userContext"
+
+
+import { AppSidebar } from "@/components/app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,44 +14,27 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
+} from "@/components/ui/breadcrumb"
+import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/sidebar"
 
-import { GetUsers, DeleteUser, UpdateUser } from "@/api/UserApi";
-import { useEffect, useState } from "react";
 
-export default function Admin({ user }) {
+export default function Admin() {
+
+
+  const {user} = useContext(UserContext)
+  
   const [listUsers, setListUsers] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
   const [editForm, setEditForm] = useState({ first_name: "", last_name: "", email: "", role: "" });
   const [editError, setEditError] = useState("");
+
+
+
   useEffect(() => {
     async function loadUsers() {
       try {
@@ -59,23 +48,8 @@ export default function Admin({ user }) {
     loadUsers();
   }, []);
 
-  async function onDelete(param) {
-    try {
-      const res = await DeleteUser(param);
-      setListUsers((prevUsers) => {
-        const updatedUsers = prevUsers.filter(
-          (user) => user.email !== param
-        );
 
-        console.log("Updated users:", updatedUsers);
 
-        return updatedUsers;
-      });
-
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
-  }
 
   function startEditing(account) {
     setEditingUserId(account._id);
@@ -106,13 +80,82 @@ export default function Admin({ user }) {
   console.log(listUsers);
 
   return (
-    <SidebarProvider>
+    // <SidebarProvider>
+    //   <AppSidebar />
+    //   <SidebarInset>
+    //     <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+    //       <div className="flex items-center gap-2 px-3">
+    //         <SidebarTrigger />
+    //         <Separator orientation="vertical" className="mr-2 h-4" />
+    //         <Breadcrumb>
+    //           <BreadcrumbList>
+    //             <BreadcrumbItem className="hidden md:block">
+    //               <BreadcrumbLink href="#">
+    //                 Build Your Application
+    //               </BreadcrumbLink>
+    //             </BreadcrumbItem>
+    //             <BreadcrumbSeparator className="hidden md:block" />
+    //             <BreadcrumbItem>
+    //               <BreadcrumbPage>
+    //                 Welcome {user.first_name + " "} {user.last_name}{" "}
+    //               </BreadcrumbPage>
+    //             </BreadcrumbItem>
+    //           </BreadcrumbList>
+    //         </Breadcrumb>
+    //       </div>
+    //     </header>
+    //     <div className="flex flex-1 flex-col gap-4 p-4">
+    //       <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+    //         <div className="aspect-video rounded-xl bg-muted/50" />
+    //         <div className="aspect-video rounded-xl bg-muted/50" />
+    //         <div className="aspect-video rounded-xl bg-muted/50" />
+    //       </div>
+    //       <Table className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
+    //         <TableHeader>
+    //           <TableRow>
+    //             <TableHead>First Name</TableHead>
+    //             <TableHead>Last Name</TableHead>
+    //             <TableHead>Email</TableHead>
+    //             <TableHead>Role</TableHead>
+    //             <TableHead>Join</TableHead>
+    //             <TableHead>Action</TableHead>
+    //           </TableRow>
+    //         </TableHeader>
+    //         <TableBody>
+    //           {listUsers.map((itme) => (
+    //             <TableRow key={itme._id}>
+    //               <TableCell>{editingUserId === itme._id ? <input className="w-full rounded border px-2 py-1" value={editForm.first_name} onChange={(event) => setEditForm({ ...editForm, first_name: event.target.value })} aria-label="First name" /> : itme.first_name}</TableCell>
+    //               <TableCell>{editingUserId === itme._id ? <input className="w-full rounded border px-2 py-1" value={editForm.last_name} onChange={(event) => setEditForm({ ...editForm, last_name: event.target.value })} aria-label="Last name" /> : itme.last_name}</TableCell>
+    //               <TableCell>{editingUserId === itme._id ? <input className="w-full rounded border px-2 py-1" type="email" value={editForm.email} onChange={(event) => setEditForm({ ...editForm, email: event.target.value })} aria-label="Email" /> : itme.email}</TableCell>
+    //               <TableCell>{editingUserId === itme._id ? <input className="w-full rounded border px-2 py-1" value={editForm.role} onChange={(event) => setEditForm({ ...editForm, role: event.target.value })} aria-label="Role" /> : itme.role}</TableCell>
+    //               <TableCell>{itme.createdAt}</TableCell>
+    //               <TableCell className="text-right flex gap-4 ">
+    //                 {editingUserId === itme._id ? <>
+    //                   <Button onClick={() => saveUser(itme)}>Save</Button>
+    //                   <Button variant="outline" onClick={() => { setEditingUserId(null); setEditError(""); }}>Cancel</Button>
+    //                 </> : <Button onClick={() => startEditing(itme)}>Edit user</Button>}
+    //                 <Button className="bg-red-500"   onClick={()=>{
+    //                   onDelete(itme.email, setListUsers)
+    //                 }}>delete user</Button>
+    //               </TableCell>
+    //             </TableRow>
+    //           ))}
+    //         </TableBody>
+    //       </Table>
+    //       {editError && <p className="text-sm text-red-600" role="alert">{editError}</p>}
+    //     </div>
+    //   </SidebarInset>
+    // </SidebarProvider>
+     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-          <div className="flex items-center gap-2 px-3">
-            <SidebarTrigger />
-            <Separator orientation="vertical" className="mr-2 h-4" />
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator
+              orientation="vertical"
+              className="mr-2 data-[orientation=vertical]:h-4"
+            />
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
@@ -122,55 +165,22 @@ export default function Admin({ user }) {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>
-                    Welcome {user.first_name + " "} {user.last_name}{" "}
-                  </BreadcrumbPage>
+                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
             <div className="aspect-video rounded-xl bg-muted/50" />
             <div className="aspect-video rounded-xl bg-muted/50" />
             <div className="aspect-video rounded-xl bg-muted/50" />
           </div>
-          <Table className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
-            <TableHeader>
-              <TableRow>
-                <TableHead>First Name</TableHead>
-                <TableHead>Last Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Join</TableHead>
-                <TableHead>Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {listUsers.map((itme) => (
-                <TableRow key={itme._id}>
-                  <TableCell>{editingUserId === itme._id ? <input className="w-full rounded border px-2 py-1" value={editForm.first_name} onChange={(event) => setEditForm({ ...editForm, first_name: event.target.value })} aria-label="First name" /> : itme.first_name}</TableCell>
-                  <TableCell>{editingUserId === itme._id ? <input className="w-full rounded border px-2 py-1" value={editForm.last_name} onChange={(event) => setEditForm({ ...editForm, last_name: event.target.value })} aria-label="Last name" /> : itme.last_name}</TableCell>
-                  <TableCell>{editingUserId === itme._id ? <input className="w-full rounded border px-2 py-1" type="email" value={editForm.email} onChange={(event) => setEditForm({ ...editForm, email: event.target.value })} aria-label="Email" /> : itme.email}</TableCell>
-                  <TableCell>{editingUserId === itme._id ? <input className="w-full rounded border px-2 py-1" value={editForm.role} onChange={(event) => setEditForm({ ...editForm, role: event.target.value })} aria-label="Role" /> : itme.role}</TableCell>
-                  <TableCell>{itme.createdAt}</TableCell>
-                  <TableCell className="text-right flex gap-4 ">
-                    {editingUserId === itme._id ? <>
-                      <Button onClick={() => saveUser(itme)}>Save</Button>
-                      <Button variant="outline" onClick={() => { setEditingUserId(null); setEditError(""); }}>Cancel</Button>
-                    </> : <Button onClick={() => startEditing(itme)}>Edit user</Button>}
-                    <Button className="bg-red-500"   onClick={()=>{
-                      onDelete(itme.email)
-                    }}>delete user</Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          {editError && <p className="text-sm text-red-600" role="alert">{editError}</p>}
+          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
         </div>
       </SidebarInset>
     </SidebarProvider>
   );
 }
+

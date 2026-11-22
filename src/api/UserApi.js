@@ -1,4 +1,8 @@
 import Cookie from "js-cookie";
+import {validateToken} from "@/services/jwt.validation"
+
+
+
 export const token = Cookie.get("auth_token")
 const access_token = Cookie.get("access_token")
 const base_url =import.meta.env.VITE_API_URL;
@@ -11,6 +15,7 @@ export async  function  getCamions(){
         console.log(err)
         throw new Error("error in fetching data")
     })
+    validateToken(response)
     const Users = await response.json()
     console.log(Users.data)
     return Users.data
@@ -25,6 +30,7 @@ export async function GetUsers() {
                 "Content-Type": "application/json",
             }
         })
+        validateToken(response)
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`)
         }

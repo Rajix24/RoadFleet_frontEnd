@@ -1,59 +1,16 @@
-import { useState } from "react";
-import Cookie from "js-cookie";
 import "./App.css";
-
-
-import Admin from "./pages/Admin";
-import Chauffeur from "./pages/Chauffeur.jsx";
-import Login from "./pages/Login.jsx";
-import ProtectedView from "./layouts/ProtectedView";
-import { GetUsers } from "./api/UserApi";
-
+import AppRoutes from "./routes/AppRoutes";
+import { UserProvider } from "@/context/userContext";
 
 function App() {
 
-  const [user, setUser] = useState(() => {
-   
-    const cookieUser = Cookie.get("user");
-    if (!cookieUser) {
-      return null;
-    }
-    
-    try {
-      return JSON.parse(cookieUser);
-    } catch (error) {
-      console.error("Invalid user cookie:", error);
-      return null;
-    }
-  });
 
-  function handleLogout() {
-    Cookie.remove("user");
-    setUser(null);
-    setPage("login");
-  }
 
-  if (user?.role === "admin") {
-    return (
-      <ProtectedView>
-        <Admin user={user}  />
-      </ProtectedView>
-    );
-  }
-
-  if (user?.role === "chauffeur") {
-    return (
-      <ProtectedView>
-        <Chauffeur user={user}  />
-      </ProtectedView>
-    );
-  }
-
-  return (
-    <ProtectedView>
-      <Login  editUser={setUser} />
-    </ProtectedView>
-  );
+    return(
+      <UserProvider> 
+        <AppRoutes/>
+      </UserProvider>
+    ) 
 }
 
 export default App;
