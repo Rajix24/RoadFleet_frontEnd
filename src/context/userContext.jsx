@@ -6,7 +6,9 @@ export const  UserContext = createContext(null);
 
 
 export function UserProvider({children}) {
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState(() =>{
+    return JSON.parse( Cookies.get("user")|| null)
+  }); 
 
   const login = (userData) => {
     setUser(userData);
@@ -14,12 +16,10 @@ export function UserProvider({children}) {
 
   const logout = () => {
     setUser(null);
+    Cookies.remove('user')
+    Cookies.remove('access_token')
   };
-  useEffect(()=>{
-    setUser(()=>{
-      return JSON.parse(Cookies.get("user")|| null) || null 
-    })
-  },[])
+
   return (
     <UserContext.Provider value={{ user, login, logout }}>
       {children}

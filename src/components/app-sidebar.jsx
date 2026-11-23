@@ -16,6 +16,7 @@ import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
+import { UserContext } from "@/context/userContext"
 import {
   Sidebar,
   SidebarContent,
@@ -24,40 +25,35 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 
-// This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+
   teams: [
     {
-      name: "Acme Inc",
+      name: "RoadFleet",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
     {
-      name: "Acme Corp.",
+      name: "RoadFleet.",
       logo: AudioWaveform,
       plan: "Startup",
     },
     {
-      name: "Evil Corp.",
+      name: "Roodflet.",
       logo: Command,
       plan: "Free",
     },
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
+      title: "OverView",
+      url: "/admin",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "dashboard",
+          url: "/admin",
         },
         {
           title: "Starred",
@@ -69,14 +65,34 @@ const data = {
         },
       ],
     },
+        {
+      title: "Materials",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "Camions",
+          url: "camions",
+        },
+        {
+          title: "remoques",
+          url: "remorque",
+        },
+        {
+          title: "pneus",
+          url: "pneus",
+        },
+      ],
+    },
     {
-      title: "Models",
+      title: "Trajet",
       url: "#",
       icon: Bot,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Trajet",
+          url: "trajet",
         },
         {
           title: "Explorer",
@@ -157,8 +173,10 @@ const data = {
 export function AppSidebar({
   ...props
 }) {
+  const {user} = React.useContext(UserContext)
+  data["user"]= user
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>

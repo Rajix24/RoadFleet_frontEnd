@@ -3,11 +3,8 @@ import AppRoutes from "./routes/AppRoutes";
 import { UserProvider } from "@/context/userContext";
 
 function App() {
-
-
-
     return(
-      <UserProvider> 
+      <UserProvider>  
         <AppRoutes/>
       </UserProvider>
     ) 
