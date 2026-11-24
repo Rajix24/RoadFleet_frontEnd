@@ -56,11 +56,11 @@ const data = {
           url: "/admin",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "assigne",
+          url: "/assigne",
         },
         {
-          title: "Settings",
+          title: "Marchandise",
           url: "#",
         },
       ],
